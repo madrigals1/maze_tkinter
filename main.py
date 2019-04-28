@@ -1,45 +1,82 @@
 from tkinter import *
 from tkinter.font import Font
+from tkinter import messagebox
+import random
 
 
 class MainFrame:
 	width_of_window = 500
 	height_of_window = 500
-	mazeWidth = 0
-	mazeHeight = 0
+	maze_width = 0
+	maze_height = 0
+	block_height = 0
+	can = None
+	zero_amount = 0
+	cur_x = 1
+	cur_y = 1
+	dir = 0
+	path_list = []
+	elem_list = []
+
+	def down(self, e):
+		if e.keysym == 'Escape':
+			self.restart()
+		if e.keysym == 'Return':
+			self.generate()
+
+	def restart(self):
+		if self.can:
+			self.can.destroy()
+		self.__init__(self.master)
 
 	def __init__(self, master):
 		self.master = master
 		master.title("Maze Generator")
+		master.bind('<KeyPress>', self.down)
+
+		self.width_of_window = 500
+		self.height_of_window = 500
+		self.width_of_window = 500
+		self.height_of_window = 500
+		self.maze_width = 0
+		self.maze_height = 0
+		self.block_height = 0
+		self.can = None
+		self.zero_amount = 0
+		self.cur_x = 1
+		self.cur_y = 1
+		self.dir = 0
+		self.path_list = []
+		self.elem_list = []
 
 		self.center()
 
-		self.mainPanel = PanedWindow(master, orient=VERTICAL)
-		self.mainPanel.pack()
-		self.mainPanel.place(rely=0.5, relx=0.5, anchor='center')
-		self.myfont = Font(family="Times New Roman", size=15)
-		self.label = Label(master, text="Choose size of the labyrinth", font=self.myfont)
-		self.mainPanel.add(self.label)
+		self.main_panel = PanedWindow(master, orient=VERTICAL)
+		self.main_panel.pack()
+		self.main_panel.place(rely=0.5, relx=0.5, anchor='center')
+		self.my_font = Font(family="Times New Roman", size=15)
+		self.label = Label(master, text="Choose size of the labyrinth", font=self.my_font)
+		self.main_panel.add(self.label)
 
-		self.xPanel = PanedWindow(master, orient=HORIZONTAL)
-		self.xlabel = Label(master, text="Width :\t", font=self.myfont)
-		self.xentry = Entry(master, font=self.myfont)
-		self.xPanel.add(self.xlabel)
-		self.xPanel.add(self.xentry)
+		self.x_panel = PanedWindow(master, orient=HORIZONTAL)
+		self.x_label = Label(master, text="Width :\t", font=self.my_font)
+		self.x_entry = Entry(master, font=self.my_font)
+		self.x_panel.add(self.x_label)
+		self.x_panel.add(self.x_entry)
 
-		self.yPanel = PanedWindow(master, orient=HORIZONTAL)
-		self.ylabel = Label(master, text="Height :\t", font=self.myfont)
-		self.yentry = Entry(master, font=self.myfont)
-		self.yPanel.add(self.ylabel)
-		self.yPanel.add(self.yentry)
+		self.y_panel = PanedWindow(master, orient=HORIZONTAL)
+		self.y_label = Label(master, text="Height :\t", font=self.my_font)
+		self.y_entry = Entry(master, font=self.my_font)
+		self.y_panel.add(self.y_label)
+		self.y_panel.add(self.y_entry)
 
-		self.xentry.focus()
+		self.x_entry.focus()
 
-		self.button = Button(master, text="Generate", command=self.generate, font=self.myfont)
+		self.button = Button(master, text="Generate", command=self.generate, font=self.my_font)
 
-		self.mainPanel.add(self.xPanel)
-		self.mainPanel.add(self.yPanel)
-		self.mainPanel.add(self.button)
+		self.main_panel.add(self.x_panel)
+		self.main_panel.add(self.y_panel)
+		self.main_panel.add(self.button)
 
 	def center(self):
 		screen_width = self.master.winfo_screenwidth()
@@ -51,35 +88,114 @@ class MainFrame:
 		self.master.geometry("%dx%d+%d+%d" % (self.width_of_window, self.height_of_window, x_coordinate, y_coordinate))
 
 	def generate(self):
-		self.mazeWidth = int(self.xentry.get()) * 2 + 1
-		self.mazeHeight = int(self.yentry.get()) * 2 + 1
+		if int(self.x_entry.get()) <= 1 or int(self.x_entry.get()) > 128 or int(self.x_entry.get()) <= 1 or int(
+				self.x_entry.get()) > 128:
+			messagebox.showerror("Error", "Allowed size of Labyrinth is from 2x2 to 128x128")
+		else:
+			self.maze_width = int(self.x_entry.get()) * 2 + 1
+			self.maze_height = int(self.y_entry.get()) * 2 + 1
 
-		self.mainPanel.destroy()
+			self.main_panel.destroy()
 
-		blockHeight = int((self.master.winfo_screenheight() - 150) / self.mazeHeight)
-		self.width_of_window = blockHeight * self.mazeWidth
-		self.height_of_window = blockHeight * self.mazeHeight
+			self.block_height = int((self.master.winfo_screenheight() - 150) / self.maze_height)
+			self.width_of_window = self.block_height * self.maze_width
+			self.height_of_window = self.block_height * self.maze_height
 
-		self.canvas = Canvas(self.master, width=self.master.winfo_screenwidth(), height=self.master.winfo_screenheight())
-		self.canvas.pack(expand=YES, fill=BOTH)
-		
-		self.center()
+			self.can = Canvas(self.master, width=self.master.winfo_screenwidth(),
+							  height=self.master.winfo_screenheight())
+			self.can.pack(expand=YES, fill=BOTH)
 
-		for i in range(0, self.mazeWidth):
-			for j in range(0, self.mazeHeight):
-				if i == 0 or j == 0 or i == self.mazeWidth - 1 or j == self.mazeHeight - 1:
-					self.canvas.create_rectangle(i * blockHeight, j * blockHeight, (i + 1) * blockHeight, (j + 1) * blockHeight, fill='black')
+			self.center()
+
+			for i in range(0, self.maze_width):
+				self.elem_list.append([])
+				for j in range(0, self.maze_height):
+					if i == 0 or j == 0 or i == self.maze_width - 1 or j == self.maze_height - 1:
+						self.elem_list[i].append(1)
+					elif i % 2 == 0 or j % 2 == 0:
+						self.elem_list[i].append(1)
+					else:
+						self.elem_list[i].append(0)
+
+			self.zero_amount = int(self.x_entry.get()) * int(self.y_entry.get())
+			self.find_path()
+			self.draw_labyrinth()
+
+	def draw_labyrinth(self):
+		for i in range(0, self.maze_width):
+			for j in range(0, self.maze_height):
+				if self.elem_list[i][j] == 1:
+					self.can.create_rectangle(i * self.block_height, j * self.block_height, (i + 1) * self.block_height,
+											  (j + 1) * self.block_height, fill='black')
 				else:
-					self.canvas.create_rectangle(i * blockHeight, j * blockHeight, (i + 1) * blockHeight,
-												 (j + 1) * blockHeight, outline="#fb0", fill="#ddd")
+					self.can.create_rectangle(i * self.block_height, j * self.block_height, (i + 1) * self.block_height,
+											  (j + 1) * self.block_height, fill="#ddd", outline="#ddd")
 
+	def find_path(self):
+		self.elem_list[self.cur_x][self.cur_y] = 2
+		self.zero_amount -= 1
+		while self.zero_amount > 0:
+			possible_list = self.check_valid()
+			if len(possible_list):
+				self.dir = random.choice(possible_list)
+				if len(possible_list) > 1:
+					self.path_list.append([self.cur_x, self.cur_y])
+				self.set_path()
+				self.zero_amount -= 1
+			else:
+				path = random.choice(self.path_list)
+				self.path_list.remove(path)
+				self.cur_x = path[0]
+				self.cur_y = path[1]
 
+	def check_valid(self):
+		temp_list = []
 
+		if self.cur_x + 1 is not self.maze_width - 1:
+			if self.elem_list[self.cur_x + 1][self.cur_y] is not 3 and \
+					self.elem_list[self.cur_x + 2][self.cur_y] is not 2:
+				temp_list.append(0)
 
-class MazeFrame:
-	def __init__(self, master):
-		self.master = master
-		master.title = "Second Page"
+		if self.cur_y + 1 is not self.maze_height - 1:
+			if self.elem_list[self.cur_x][self.cur_y + 1] is not 3 and \
+					self.elem_list[self.cur_x][self.cur_y + 2] is not 2:
+				temp_list.append(1)
+
+		if self.cur_x - 1 is not 0:
+			if self.elem_list[self.cur_x - 1][self.cur_y] is not 3 and \
+					self.elem_list[self.cur_x - 2][self.cur_y] is not 2:
+				temp_list.append(2)
+
+		if self.cur_y - 1 is not 0:
+			if self.elem_list[self.cur_x][self.cur_y - 1] is not 3 and \
+					self.elem_list[self.cur_x][self.cur_y - 2] is not 2:
+				temp_list.append(3)
+
+		return temp_list
+
+	def set_path(self):
+		if self.dir == 0:
+			self.elem_list[self.cur_x + 1][self.cur_y] = 3
+			self.elem_list[self.cur_x + 2][self.cur_y] = 2
+			self.cur_x += 2
+		if self.dir == 1:
+			self.elem_list[self.cur_x][self.cur_y + 1] = 3
+			self.elem_list[self.cur_x][self.cur_y + 2] = 2
+			self.cur_y += 2
+		if self.dir == 2:
+			self.elem_list[self.cur_x - 1][self.cur_y] = 3
+			self.elem_list[self.cur_x - 2][self.cur_y] = 2
+			self.cur_x -= 2
+		if self.dir == 3:
+			self.elem_list[self.cur_x][self.cur_y - 1] = 3
+			self.elem_list[self.cur_x][self.cur_y - 2] = 2
+			self.cur_y -= 2
+
+	def redefine(self):
+		for i in range(0, self.maze_width):
+			for j in range(0, self.maze_height):
+				if self.elem_list[i][j] == 2 or self.elem_list[i][j] == 3:
+					self.elem_list[i][j] = 0
 
 
 root = Tk()
