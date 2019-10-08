@@ -119,8 +119,29 @@ class MainFrame:
 
             self.zero_amount = int(self.x_entry.get()) * int(self.y_entry.get())
             self.find_path()
+            self.elem_list[self.maze_height - 2][self.maze_width - 2] = 4
+
+            self.solution(1, 1)
+
+    def solution(self, x, y):
+        maze = self.elem_list
+        if x == 0 or x == self.maze_height or y == 0 or y == self.maze_width or maze[x][y] == 1 or maze[x][y] == 5:
+            return 0
+        if maze[x][y] == 4:
+            maze[x][y] = 5
             self.draw_labyrinth()
-            self.print_labyrinth()
+            maze[x][y] = 4
+            return 1
+
+        t = maze[x][y]
+        maze[x][y] = 5
+        self.solution(x + 1, y)
+        self.solution(x - 1, y)
+        self.solution(x, y + 1)
+        self.solution(x, y - 1)
+        maze[x][y] = t
+
+        return 0
 
     def draw_labyrinth(self):
         for i in range(0, self.maze_width):
@@ -129,6 +150,10 @@ class MainFrame:
                     self.can.create_rectangle(i * self.block_height, j * self.block_height,
                                               (i + 1) * self.block_height,
                                               (j + 1) * self.block_height, fill='black')
+                elif self.elem_list[i][j] == 5:
+                    self.can.create_rectangle(i * self.block_height, j * self.block_height,
+                                              (i + 1) * self.block_height,
+                                              (j + 1) * self.block_height, fill='green')
                 else:
                     self.can.create_rectangle(i * self.block_height, j * self.block_height,
                                               (i + 1) * self.block_height,
