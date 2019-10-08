@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.font import Font
 from tkinter import messagebox
 import random
+import sys
 
 
 class MainFrame:
@@ -233,7 +234,10 @@ class MainFrame:
                     self.elem_list[i][j] = 0
 
 
+sys.setrecursionlimit(2000)
 root = Tk()
 gui = MainFrame(root)
 
 root.mainloop()
+
+
