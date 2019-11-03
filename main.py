@@ -18,6 +18,15 @@ class MainFrame:
     dir = 0
     path_list = []
     elem_list = []
+    solution_show = True
+
+    def toggle(self):
+        if self.t_btn.config('text')[-1] == 'Show solution':
+            self.solution_show = False
+            self.t_btn.config(text="Don't show solution")
+        else:
+            self.solution_show = True
+            self.t_btn.config(text='Show solution')
 
     def down(self, e):
         if e.keysym == 'Escape':
@@ -73,10 +82,14 @@ class MainFrame:
 
         self.x_entry.focus()
 
+        self.t_btn = Button(text="Show solution", width=12, command=self.toggle)
+        self.t_btn.pack(pady=5)
+
         self.button = Button(master, text="Generate", command=self.generate, font=self.my_font)
 
         self.main_panel.add(self.x_panel)
         self.main_panel.add(self.y_panel)
+        self.main_panel.add(self.t_btn)
         self.main_panel.add(self.button)
 
     def center(self):
@@ -122,9 +135,13 @@ class MainFrame:
             self.find_path()
             self.elem_list[self.maze_height - 2][self.maze_width - 2] = 4
 
-            self.solution(1, 1)
+            if self.solution_show:
+                self.solution(1, 1)
+            else:
+                self.draw_labyrinth()
 
     def solution(self, x, y):
+        print(x, y)
         maze = self.elem_list
         if x == 0 or x == self.maze_height or y == 0 or y == self.maze_width or maze[x][y] == 1 or maze[x][y] == 5:
             return 0
@@ -239,5 +256,3 @@ root = Tk()
 gui = MainFrame(root)
 
 root.mainloop()
-
-
