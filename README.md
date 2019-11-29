@@ -18,5 +18,9 @@ Sadly only generates up to 128x128 labyrinths.
 
 ## Installation and Running
 
-* First way - Open the project by **Pycharm** and running through configuratin named **Main**
+* First way
+  * Open the project by **Pycharm** 
+  * Set the python interpreter (only Python3)
+  * Reset **main.py** file inside configuration **Main**
+  * Run configuratin **Main**
 * Second way - Just clone the repository and run **python main.py** inside the folder
