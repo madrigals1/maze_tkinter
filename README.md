@@ -1,7 +1,7 @@
 # MazeGenerator
 
 Project for generating labyrinths, made in Python3 using Tkinter.  
-Sadly only generates up to 128x128 labyrinths.
+Sadly only generates up to 128x128 labyrinths. Also program can generate the path from start to end.
 
 > Works in Python3
 
