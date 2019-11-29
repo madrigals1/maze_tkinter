@@ -21,5 +21,6 @@ Sadly only generates up to 128x128 labyrinths.
 * First way
   * Open the project by **Pycharm** 
   * Set the python interpreter (only Python3)
-  * Run through configuratin named **Main**
+  * Reset **main.py** file inside configuration **Main**
+  * Run configuratin **Main**
 * Second way - Just clone the repository and run **python main.py** inside the folder
