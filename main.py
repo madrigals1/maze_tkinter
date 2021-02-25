@@ -28,7 +28,7 @@ class MainFrame:
             self.solution_show = True
             self.t_btn.config(text="Show solution")
 
-    def down(self, e):
+    def press(self, e):
         if e.keysym == "Escape":
             self.restart()
         if e.keysym == "Return":
@@ -41,7 +41,7 @@ class MainFrame:
     def __init__(self, master):
         self.master = master
         master.title("Maze")
-        master.bind("<KeyPress>", self.down)
+        master.bind("<KeyPress>", self.press)
 
         self.width_of_window = 500
         self.height_of_window = 500
