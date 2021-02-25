@@ -21,12 +21,9 @@ class MainFrame:
     solution_show = True
 
     def toggle(self):
-        if self.t_btn.config("text")[-1] == "Show solution":
-            self.solution_show = False
-            self.t_btn.config(text="Don't show solution")
-        else:
-            self.solution_show = True
-            self.t_btn.config(text="Show solution")
+        self.solution_show = not self.solution_show
+        text = "Show solution" if self.solution_show else "Don't show solution"
+        self.t_btn.config(text=text)
 
     def press(self, e):
         if e.keysym == "Escape":
