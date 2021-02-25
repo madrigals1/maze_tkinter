@@ -11,8 +11,8 @@ from constants import T
 class MainFrame:
     def __init__(self, master):
         # Settings
-        self.width_of_window = 500
-        self.height_of_window = 500
+        self.width_of_window = constants.WINDOW_WIDTH
+        self.height_of_window = constants.WINDOW_HEIGHT
         self.maze_width = 0
         self.maze_height = 0
         self.block_height = 0
@@ -20,7 +20,7 @@ class MainFrame:
         self.zero_amount = 0
         self.cur_x = 1
         self.cur_y = 1
-        self.dir = 0
+        self.direction = 0
         self.path_list = []
         self.elem_list = []
         self.solution_show = True
@@ -125,13 +125,11 @@ class MainFrame:
                 self.elem_list.append([])
                 for j in range(0, self.maze_height):
                     if (
-                        i == 0
-                        or j == 0
-                        or i == self.maze_width - 1
-                        or j == self.maze_height - 1
+                        i in [0, self.maze_width - 1]
+                        or j in [0, self.maze_height - 1]
+                        or i % 2 == 0
+                        or j % 2 == 0
                     ):
-                        self.elem_list[i].append(1)
-                    elif i % 2 == 0 or j % 2 == 0:
                         self.elem_list[i].append(1)
                     else:
                         self.elem_list[i].append(0)
@@ -194,7 +192,7 @@ class MainFrame:
         while self.zero_amount > 0:
             possible_list = self.check_valid()
             if len(possible_list):
-                self.dir = random.choice(possible_list)
+                self.direction = random.choice(possible_list)
                 if len(possible_list) > 1:
                     self.path_list.append([self.cur_x, self.cur_y])
                 self.set_path()
@@ -239,19 +237,19 @@ class MainFrame:
         return temp_list
 
     def set_path(self):
-        if self.dir == 0:
+        if self.direction == 0:
             self.elem_list[self.cur_x + 1][self.cur_y] = 3
             self.elem_list[self.cur_x + 2][self.cur_y] = 2
             self.cur_x += 2
-        if self.dir == 1:
+        if self.direction == 1:
             self.elem_list[self.cur_x][self.cur_y + 1] = 3
             self.elem_list[self.cur_x][self.cur_y + 2] = 2
             self.cur_y += 2
-        if self.dir == 2:
+        if self.direction == 2:
             self.elem_list[self.cur_x - 1][self.cur_y] = 3
             self.elem_list[self.cur_x - 2][self.cur_y] = 2
             self.cur_x -= 2
-        if self.dir == 3:
+        if self.direction == 3:
             self.elem_list[self.cur_x][self.cur_y - 1] = 3
             self.elem_list[self.cur_x][self.cur_y - 2] = 2
             self.cur_y -= 2

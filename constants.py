@@ -3,6 +3,8 @@ WALL_COLOR = "black"
 PATH_COLOR = "green"
 EMPTY_COLOR = "#ddd"
 RECURSION_LIMIT = 2000
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
 
 
 class T:
