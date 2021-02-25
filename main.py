@@ -4,66 +4,39 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.font import Font
 
+import constants
+from constants import T
+
 
 class MainFrame:
-    width_of_window = 500
-    height_of_window = 500
-    maze_width = 0
-    maze_height = 0
-    block_height = 0
-    can = None
-    zero_amount = 0
-    cur_x = 1
-    cur_y = 1
-    dir = 0
-    path_list = []
-    elem_list = []
-    solution_show = True
-
-    def toggle(self):
-        self.solution_show = not self.solution_show
-        text = "Show solution" if self.solution_show else "Don't show solution"
-        self.t_btn.config(text=text)
-
-    def press(self, e):
-        if e.keysym == "Escape":
-            self.restart()
-        if e.keysym == "Return":
-            self.generate()
-
-    def restart(self):
-        self.can and self.can.destroy()
-        self.__init__(self.master)
-
     def __init__(self, master):
-        self.master = master
-        master.title("Maze")
-        master.bind("<KeyPress>", self.press)
-
-        self.width_of_window = 500
-        self.height_of_window = 500
+        # Settings
         self.width_of_window = 500
         self.height_of_window = 500
         self.maze_width = 0
         self.maze_height = 0
         self.block_height = 0
-        self.can = None
+        self.canvas = None
         self.zero_amount = 0
         self.cur_x = 1
         self.cur_y = 1
         self.dir = 0
         self.path_list = []
         self.elem_list = []
+        self.solution_show = True
+        self.main_title = T.MAZE
+
+        self.master = master
+        master.title(self.main_title)
+        master.bind("<KeyPress>", self.press)
 
         self.center()
 
         self.main_panel = PanedWindow(master, orient=VERTICAL)
         self.main_panel.pack()
         self.main_panel.place(rely=0.5, relx=0.5, anchor="center")
-        self.my_font = Font(family="Times New Roman", size=15)
-        self.label = Label(
-            master, text="Choose size of the labyrinth", font=self.my_font
-        )
+        self.my_font = Font(family=constants.FONT, size=15)
+        self.label = Label(master, text=T.MAIN_TEXT, font=self.my_font)
         self.main_panel.add(self.label)
 
         self.x_panel = PanedWindow(master, orient=HORIZONTAL)
@@ -80,17 +53,32 @@ class MainFrame:
 
         self.x_entry.focus()
 
-        self.t_btn = Button(text="Show solution", width=12, command=self.toggle)
+        self.t_btn = Button(text=T.SHOW_SOLUTION, width=12, command=self.toggle)
         self.t_btn.pack(pady=5)
 
         self.button = Button(
-            master, text="Generate", command=self.generate, font=self.my_font
+            master, text=T.GENERATE, command=self.generate, font=self.my_font
         )
 
         self.main_panel.add(self.x_panel)
         self.main_panel.add(self.y_panel)
         self.main_panel.add(self.t_btn)
         self.main_panel.add(self.button)
+
+    def toggle(self):
+        self.solution_show = not self.solution_show
+        text = T.SHOW_SOLUTION if self.solution_show else T.DONT_SHOW_SOLUTION
+        self.t_btn.config(text=text)
+
+    def press(self, e):
+        if e.keysym == "Escape":
+            self.restart()
+        if e.keysym == "Return":
+            self.generate()
+
+    def restart(self):
+        self.canvas and self.canvas.destroy()
+        self.__init__(self.master)
 
     def center(self):
         screen_width = self.master.winfo_screenwidth()
@@ -111,9 +99,7 @@ class MainFrame:
             or int(self.x_entry.get()) <= 1
             or int(self.x_entry.get()) > 128
         ):
-            messagebox.showerror(
-                "Error", "Allowed size of Labyrinth is from 2x2 to 128x128"
-            )
+            messagebox.showerror("Error", T.ALLOWED_SIZE_LIMIT)
         else:
             self.maze_width = int(self.x_entry.get()) * 2 + 1
             self.maze_height = int(self.y_entry.get()) * 2 + 1
@@ -194,20 +180,13 @@ class MainFrame:
                 ]
                 kwargs = {}
                 if self.elem_list[i][j] == 1:
-                    kwargs["fill"] = "black"
+                    kwargs["fill"] = constants.WALL_COLOR
                 elif self.elem_list[i][j] == 5:
-                    kwargs["fill"] = "green"
+                    kwargs["fill"] = constants.PATH_COLOR
                 else:
-                    kwargs["fill"] = "#ddd"
-                    kwargs["outline"] = "#ddd"
+                    kwargs["fill"] = constants.EMPTY_COLOR
+                    kwargs["outline"] = constants.EMPTY_COLOR
                 self.can.create_rectangle(*args, **kwargs)
-
-    def print_labyrinth(self):
-        for i in range(0, self.maze_width):
-            s = ""
-            for j in range(0, self.maze_height):
-                s += str(self.elem_list[i][j]) + " "
-            print(s)
 
     def find_path(self):
         self.elem_list[self.cur_x][self.cur_y] = 2
@@ -284,7 +263,7 @@ class MainFrame:
                     self.elem_list[i][j] = 0
 
 
-sys.setrecursionlimit(2000)
+sys.setrecursionlimit(constants.RECURSION_LIMIT)
 root = Tk()
 gui = MainFrame(root)
 
