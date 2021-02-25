@@ -1,10 +1,7 @@
-# MazeGenerator
+# Maze
 
-Project for generating labyrinths, made in Python using Tkinter.  
-Sadly only generates up to 128x128 labyrinths. Also program can generate the path from start to end.
-
-> Works in Python3
-
+Project for generating mazes, made in Python using Tkinter.  
+Only generates up to 128x128 labyrinths. Also program can generate the path from start to end.
 
 ## GamePlay
 
@@ -16,11 +13,14 @@ Sadly only generates up to 128x128 labyrinths. Also program can generate the pat
 
 ![Gameplay](/Images/mazegame.png?raw=true "Gameplay")
 
+## Prerequisites
+
+- [Python 3](https://www.python.org/downloads/) - Python is an interpreted, high-level and general-purpose programming language. 
+
 ## Installation and Running
 
-* First way
-  * Open the project by **Pycharm** 
-  * Set the python interpreter (only Python3)
-  * Reset **main.py** file inside configuration **Main**
-  * Run configuratin **Main**
-* Second way - Just clone the repository and run **python main.py** inside the folder
+> No installation needed, just execute `main.py` script like this
+
+```shell script
+python main.py
+```
