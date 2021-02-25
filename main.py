@@ -1,8 +1,8 @@
-from tkinter import *
-from tkinter.font import Font
-from tkinter import messagebox
 import random
 import sys
+from tkinter import *
+from tkinter import messagebox
+from tkinter.font import Font
 
 
 class MainFrame:
@@ -21,28 +21,27 @@ class MainFrame:
     solution_show = True
 
     def toggle(self):
-        if self.t_btn.config('text')[-1] == 'Show solution':
+        if self.t_btn.config("text")[-1] == "Show solution":
             self.solution_show = False
             self.t_btn.config(text="Don't show solution")
         else:
             self.solution_show = True
-            self.t_btn.config(text='Show solution')
+            self.t_btn.config(text="Show solution")
 
     def down(self, e):
-        if e.keysym == 'Escape':
+        if e.keysym == "Escape":
             self.restart()
-        if e.keysym == 'Return':
+        if e.keysym == "Return":
             self.generate()
 
     def restart(self):
-        if self.can:
-            self.can.destroy()
+        self.can and self.can.destroy()
         self.__init__(self.master)
 
     def __init__(self, master):
         self.master = master
-        master.title("Maze Generator")
-        master.bind('<KeyPress>', self.down)
+        master.title("Maze")
+        master.bind("<KeyPress>", self.down)
 
         self.width_of_window = 500
         self.height_of_window = 500
@@ -63,9 +62,11 @@ class MainFrame:
 
         self.main_panel = PanedWindow(master, orient=VERTICAL)
         self.main_panel.pack()
-        self.main_panel.place(rely=0.5, relx=0.5, anchor='center')
+        self.main_panel.place(rely=0.5, relx=0.5, anchor="center")
         self.my_font = Font(family="Times New Roman", size=15)
-        self.label = Label(master, text="Choose size of the labyrinth", font=self.my_font)
+        self.label = Label(
+            master, text="Choose size of the labyrinth", font=self.my_font
+        )
         self.main_panel.add(self.label)
 
         self.x_panel = PanedWindow(master, orient=HORIZONTAL)
@@ -85,7 +86,9 @@ class MainFrame:
         self.t_btn = Button(text="Show solution", width=12, command=self.toggle)
         self.t_btn.pack(pady=5)
 
-        self.button = Button(master, text="Generate", command=self.generate, font=self.my_font)
+        self.button = Button(
+            master, text="Generate", command=self.generate, font=self.my_font
+        )
 
         self.main_panel.add(self.x_panel)
         self.main_panel.add(self.y_panel)
@@ -99,24 +102,38 @@ class MainFrame:
         x_coordinate = (screen_width / 2) - (self.width_of_window / 2)
         y_coordinate = (screen_height / 2) - (self.height_of_window / 2)
 
-        self.master.geometry("%dx%d+%d+%d" % (self.width_of_window, self.height_of_window, x_coordinate, y_coordinate))
+        self.master.geometry(
+            "%dx%d+%d+%d"
+            % (self.width_of_window, self.height_of_window, x_coordinate, y_coordinate)
+        )
 
     def generate(self):
-        if int(self.x_entry.get()) <= 1 or int(self.x_entry.get()) > 128 or int(self.x_entry.get()) <= 1 or int(
-                self.x_entry.get()) > 128:
-            messagebox.showerror("Error", "Allowed size of Labyrinth is from 2x2 to 128x128")
+        if (
+            int(self.x_entry.get()) <= 1
+            or int(self.x_entry.get()) > 128
+            or int(self.x_entry.get()) <= 1
+            or int(self.x_entry.get()) > 128
+        ):
+            messagebox.showerror(
+                "Error", "Allowed size of Labyrinth is from 2x2 to 128x128"
+            )
         else:
             self.maze_width = int(self.x_entry.get()) * 2 + 1
             self.maze_height = int(self.y_entry.get()) * 2 + 1
 
             self.main_panel.destroy()
 
-            self.block_height = int((self.master.winfo_screenheight() - 150) / self.maze_height)
+            self.block_height = int(
+                (self.master.winfo_screenheight() - 150) / self.maze_height
+            )
             self.width_of_window = self.block_height * self.maze_width
             self.height_of_window = self.block_height * self.maze_height
 
-            self.can = Canvas(self.master, width=self.master.winfo_screenwidth(),
-                              height=self.master.winfo_screenheight())
+            self.can = Canvas(
+                self.master,
+                width=self.master.winfo_screenwidth(),
+                height=self.master.winfo_screenheight(),
+            )
             self.can.pack(expand=YES, fill=BOTH)
 
             self.center()
@@ -124,7 +141,12 @@ class MainFrame:
             for i in range(0, self.maze_width):
                 self.elem_list.append([])
                 for j in range(0, self.maze_height):
-                    if i == 0 or j == 0 or i == self.maze_width - 1 or j == self.maze_height - 1:
+                    if (
+                        i == 0
+                        or j == 0
+                        or i == self.maze_width - 1
+                        or j == self.maze_height - 1
+                    ):
                         self.elem_list[i].append(1)
                     elif i % 2 == 0 or j % 2 == 0:
                         self.elem_list[i].append(1)
@@ -141,9 +163,12 @@ class MainFrame:
                 self.draw_labyrinth()
 
     def solution(self, x, y):
-        print(x, y)
         maze = self.elem_list
-        if x == 0 or x == self.maze_height or y == 0 or y == self.maze_width or maze[x][y] == 1 or maze[x][y] == 5:
+        if (
+            x in [0, self.maze_height]
+            or y in [0, self.maze_width]
+            or maze[x][y] in [1, 5]
+        ):
             return 0
         if maze[x][y] == 4:
             maze[x][y] = 5
@@ -164,18 +189,21 @@ class MainFrame:
     def draw_labyrinth(self):
         for i in range(0, self.maze_width):
             for j in range(0, self.maze_height):
+                args = [
+                    i * self.block_height,
+                    j * self.block_height,
+                    (i + 1) * self.block_height,
+                    (j + 1) * self.block_height,
+                ]
+                kwargs = {}
                 if self.elem_list[i][j] == 1:
-                    self.can.create_rectangle(i * self.block_height, j * self.block_height,
-                                              (i + 1) * self.block_height,
-                                              (j + 1) * self.block_height, fill='black')
+                    kwargs["fill"] = "black"
                 elif self.elem_list[i][j] == 5:
-                    self.can.create_rectangle(i * self.block_height, j * self.block_height,
-                                              (i + 1) * self.block_height,
-                                              (j + 1) * self.block_height, fill='green')
+                    kwargs["fill"] = "green"
                 else:
-                    self.can.create_rectangle(i * self.block_height, j * self.block_height,
-                                              (i + 1) * self.block_height,
-                                              (j + 1) * self.block_height, fill="#ddd", outline="#ddd")
+                    kwargs["fill"] = "#ddd"
+                    kwargs["outline"] = "#ddd"
+                self.can.create_rectangle(*args, **kwargs)
 
     def print_labyrinth(self):
         for i in range(0, self.maze_width):
@@ -204,24 +232,32 @@ class MainFrame:
     def check_valid(self):
         temp_list = []
 
-        if self.cur_x + 1 is not self.maze_width - 1:
-            if self.elem_list[self.cur_x + 1][self.cur_y] is not 3 and \
-                    self.elem_list[self.cur_x + 2][self.cur_y] is not 2:
+        if self.cur_x + 1 != self.maze_width - 1:
+            if (
+                self.elem_list[self.cur_x + 1][self.cur_y] != 3
+                and self.elem_list[self.cur_x + 2][self.cur_y] != 2
+            ):
                 temp_list.append(0)
 
-        if self.cur_y + 1 is not self.maze_height - 1:
-            if self.elem_list[self.cur_x][self.cur_y + 1] is not 3 and \
-                    self.elem_list[self.cur_x][self.cur_y + 2] is not 2:
+        if self.cur_y + 1 != self.maze_height - 1:
+            if (
+                self.elem_list[self.cur_x][self.cur_y + 1] != 3
+                and self.elem_list[self.cur_x][self.cur_y + 2] != 2
+            ):
                 temp_list.append(1)
 
-        if self.cur_x - 1 is not 0:
-            if self.elem_list[self.cur_x - 1][self.cur_y] is not 3 and \
-                    self.elem_list[self.cur_x - 2][self.cur_y] is not 2:
+        if self.cur_x - 1 != 0:
+            if (
+                self.elem_list[self.cur_x - 1][self.cur_y] != 3
+                and self.elem_list[self.cur_x - 2][self.cur_y] != 2
+            ):
                 temp_list.append(2)
 
-        if self.cur_y - 1 is not 0:
-            if self.elem_list[self.cur_x][self.cur_y - 1] is not 3 and \
-                    self.elem_list[self.cur_x][self.cur_y - 2] is not 2:
+        if self.cur_y - 1 != 0:
+            if (
+                self.elem_list[self.cur_x][self.cur_y - 1] != 3
+                and self.elem_list[self.cur_x][self.cur_y - 2] != 2
+            ):
                 temp_list.append(3)
 
         return temp_list
