@@ -5,13 +5,13 @@ Only generates up to 128x128 labyrinths. Also program can generate the path from
 
 ## GamePlay
 
-1) Menu
+Menu
 
-![Menu](/Images/mazemenu.png?raw=true "Menu")
+![Menu](https://i.imgur.com/3St0LdG.png "Menu")
 
-2) Gameplay
+Gameplay
 
-![Gameplay](/Images/mazegame.png?raw=true "Gameplay")
+![Gameplay](https://i.imgur.com/mA35AkG.png "Gameplay")
 
 ## Prerequisites
 
